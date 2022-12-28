@@ -2,14 +2,25 @@ package ru.alishev.springcourse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Random;
 
 @Component
 public class MusicPlayer {
-
+    @Value("${musicPlayer.name}")
+    private String name;
+    @Value("${musicPlayer.volume}")
+    private int volume;
+    public String getName() {
+        return name;
+    }
+    public int getVolume() {
+        return volume;
+    }
     private Music music1;
     private Music music2;
     @Autowired
@@ -28,5 +39,9 @@ public class MusicPlayer {
         String randomElement = music.getSong().get(rand.nextInt(music.getSong().size()));
 
         return "Playing: " + randomElement;
+    }
+    @PostConstruct
+    public void showPlayerInfo() {
+        System.out.println("Our player have name: "+getName()+" volume: "+getVolume());
     }
 }
