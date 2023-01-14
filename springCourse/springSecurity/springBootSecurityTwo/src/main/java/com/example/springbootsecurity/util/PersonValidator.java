@@ -2,7 +2,9 @@ package com.example.springbootsecurity.util;
 
 import com.example.springbootsecurity.models.Person;
 import com.example.springbootsecurity.services.PeopleService;
+import com.example.springbootsecurity.services.PersonDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -12,10 +14,10 @@ import org.springframework.validation.Validator;
 @Component
 public class PersonValidator implements Validator {
 
-    private final PeopleService peopleService;
+    private final PersonDetailsService peopleService;
 
     @Autowired
-    public PersonValidator(PeopleService peopleService) {
+    public PersonValidator(PersonDetailsService peopleService) {
         this.peopleService = peopleService;
     }
 
@@ -27,8 +29,12 @@ public class PersonValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         Person person = (Person) o;
-
-        if (peopleService.getPersonByFullName(person.getFullName()).isPresent())
-            errors.rejectValue("fullName", "", "Человек с таким ФИО уже существует");
+        try {
+            peopleService.loadUserByUsername(person.getFullName());
+        }
+        catch (UsernameNotFoundException ignored) {
+            return; //пользователь с таким именем не найден
+        }
+        errors.rejectValue("username","Человек с таким именем уже существует");
     }
 }

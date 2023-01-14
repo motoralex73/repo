@@ -22,8 +22,8 @@ public class PersonDetailsService  implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Person> personOption = peopleRepository.findByFullName(username);
+    public UserDetails loadUserByUsername(String fullName) throws UsernameNotFoundException {
+        Optional<Person> personOption = peopleRepository.findByFullName(fullName);
         if (personOption.isEmpty()) throw new UsernameNotFoundException("User not found!");
         return new PersonDetails(personOption.get());
     }
