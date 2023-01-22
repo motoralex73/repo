@@ -3,6 +3,7 @@ package com.example.springbootsecurity.services;
 import com.example.springbootsecurity.models.Book;
 import com.example.springbootsecurity.models.Person;
 import com.example.springbootsecurity.repositories.PeopleRepository;
+import com.example.springbootsecurity.util.PersonNotFountException;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class PeopleService {
 
     public Person findOne(int id) {
         Optional<Person> foundPerson = peopleRepository.findById(id);
-        return foundPerson.orElse(null);
+        return foundPerson.orElseThrow(PersonNotFountException::new);
     }
 
     @Transactional
